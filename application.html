@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Apply — Personal Assistant · Phuket</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --orange: #ff5a1f;
+    --orange-2: #ff8246;
+    --ink: #0a0a0a;
+    --ink-soft: #555;
+    --muted: #999;
+    --line: #e8e8e8;
+    --bg: #fafaf8;
+    --card: #fff;
+    --shadow: 0 4px 24px rgba(0,0,0,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* TOP BAR */
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 32px;
+    border-bottom: 1px solid var(--line);
+    background: white;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+  }
+  .brand {
+    font-weight: 600;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--ink);
+  }
+  .brand-dot {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--orange), var(--orange-2));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: 14px;
+    box-shadow: 0 4px 12px rgba(255,90,31,0.3);
+  }
+  .step-counter {
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  /* PROGRESS BAR */
+  .progress-wrap {
+    position: fixed;
+    top: 65px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--line);
+    z-index: 10;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--orange), var(--orange-2));
+    transition: width 0.4s cubic-bezier(.2,.8,.2,1);
+    border-radius: 0 2px 2px 0;
+  }
+
+  /* MAIN */
+  main {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 100px 24px 100px;
+    min-height: 100vh;
+  }
+
+  /* STEP CONTAINER */
+  .step {
+    display: none;
+    max-width: 640px;
+    width: 100%;
+    animation: stepIn 0.35s cubic-bezier(.2,.8,.2,1) forwards;
+  }
+  .step.active { display: block; }
+  .step.exiting {
+    animation: stepOut 0.25s ease forwards;
+    pointer-events: none;
+  }
+
+  @keyframes stepIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes stepOut {
+    from { opacity: 1; transform: translateY(0); }
+    to   { opacity: 0; transform: translateY(-16px); }
+  }
+
+  .step-label {
+    font-size: 13px;
+    color: var(--orange);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .step h2 {
+    font-family: 'Inter', sans-serif;
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    margin-bottom: 10px;
+  }
+  .step h2 em {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-weight: 400;
+    color: var(--orange);
+  }
+  .step .hint {
+    font-size: 16px;
+    color: var(--ink-soft);
+    margin-bottom: 36px;
+    line-height: 1.5;
+  }
+
+  /* INPUTS */
+  .input-field {
+    width: 100%;
+    border: none;
+    border-bottom: 2px solid var(--line);
+    background: transparent;
+    font-size: 22px;
+    font-family: 'Inter', sans-serif;
+    color: var(--ink);
+    padding: 12px 0;
+    outline: none;
+    transition: border-color 0.2s;
+    margin-bottom: 8px;
+    -webkit-appearance: none;
+  }
+  .input-field::placeholder { color: #ccc; }
+  .input-field:focus { border-color: var(--orange); }
+  .input-field.sm { font-size: 18px; }
+
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 8px;
+  }
+  .field-row .input-field { margin-bottom: 0; }
+
+  textarea.input-field {
+    border: 2px solid var(--line);
+    border-radius: 12px;
+    padding: 16px;
+    min-height: 160px;
+    resize: vertical;
+    font-size: 17px;
+    line-height: 1.55;
+    margin-bottom: 0;
+  }
+  textarea.input-field:focus { border-color: var(--orange); }
+
+  .field-hint {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 8px;
+  }
+
+  /* OPTION CARDS */
+  .options {
+    display: grid;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .options.cols-2 { grid-template-columns: 1fr 1fr; }
+  .options.cols-3 { grid-template-columns: repeat(3, 1fr); }
+
+  .option {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 20px;
+    border: 2px solid var(--line);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    user-select: none;
+    background: white;
+  }
+  .option:hover {
+    border-color: rgba(255,90,31,0.4);
+    background: #fff8f5;
+  }
+  .option.selected {
+    border-color: var(--orange);
+    background: linear-gradient(135deg, #fff5f0, #fff8f5);
+    box-shadow: 0 0 0 1px var(--orange);
+  }
+  .option-letter {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    flex-shrink: 0;
+    transition: all 0.18s;
+  }
+  .option.selected .option-letter {
+    background: var(--orange);
+    border-color: var(--orange);
+    color: white;
+  }
+  .option-text {
+    font-size: 17px;
+    font-weight: 500;
+    line-height: 1.3;
+  }
+
+  /* DISQUALIFICATION */
+  .disq-box {
+    background: #fff8f0;
+    border: 2px solid rgba(255,90,31,0.25);
+    border-radius: 16px;
+    padding: 32px;
+    text-align: center;
+    display: none;
+  }
+  .disq-box.show { display: block; }
+  .disq-icon { font-size: 40px; margin-bottom: 16px; }
+  .disq-box h3 { font-size: 22px; font-weight: 600; margin-bottom: 10px; }
+  .disq-box p { color: var(--ink-soft); line-height: 1.6; font-size: 16px; }
+
+  /* KEYBOARD HINT */
+  .keyboard-hint {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 20px;
+  }
+  .keyboard-hint kbd {
+    display: inline-block;
+    padding: 2px 7px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 12px;
+    font-family: inherit;
+    background: #f8f8f8;
+    color: var(--ink-soft);
+  }
+
+  /* NAV BUTTONS */
+  .nav-row {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 20px 32px;
+    background: rgba(250,250,248,0.9);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 10;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 13px 22px;
+    border-radius: 100px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: 'Inter', sans-serif;
+    border: none;
+  }
+  .btn-back {
+    background: transparent;
+    color: var(--ink-soft);
+    border: 1px solid var(--line);
+  }
+  .btn-back:hover { background: #f0f0f0; }
+  .btn-next {
+    background: linear-gradient(180deg, var(--orange-2), var(--orange));
+    color: white;
+    box-shadow: 0 8px 20px rgba(255,90,31,0.3);
+    padding: 13px 28px;
+  }
+  .btn-next:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 28px rgba(255,90,31,0.4);
+  }
+  .btn-next:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  /* WELCOME SCREEN */
+  .welcome-content {
+    text-align: center;
+    max-width: 560px;
+    margin: 0 auto;
+  }
+  .welcome-badge {
+    display: inline-block;
+    background: #fff1ea;
+    color: var(--orange);
+    border: 1px solid rgba(255,90,31,0.2);
+    padding: 6px 16px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 28px;
+  }
+  .welcome-content h1 {
+    font-size: clamp(36px, 5vw, 54px);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.07;
+    margin-bottom: 20px;
+  }
+  .welcome-content h1 em {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-weight: 400;
+    color: var(--orange);
+  }
+  .welcome-content p {
+    font-size: 18px;
+    color: var(--ink-soft);
+    margin-bottom: 40px;
+    line-height: 1.55;
+  }
+  .welcome-meta {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+  .welcome-meta span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* CONFIRMATION */
+  .confirm-content {
+    text-align: center;
+    max-width: 560px;
+    margin: 0 auto;
+  }
+  .confirm-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--orange), var(--orange-2));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 28px;
+    box-shadow: 0 12px 32px rgba(255,90,31,0.3);
+    font-size: 36px;
+  }
+  .confirm-content h2 {
+    font-size: clamp(32px, 4vw, 48px);
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    margin-bottom: 16px;
+  }
+  .confirm-content p {
+    font-size: 18px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+    max-width: 440px;
+    margin: 0 auto 32px;
+  }
+  .confirm-back {
+    display: inline-block;
+    text-decoration: none;
+    color: var(--ink-soft);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 10px 20px;
+    border: 1px solid var(--line);
+    border-radius: 100px;
+    transition: all 0.2s;
+  }
+  .confirm-back:hover { background: #f0f0f0; }
+
+  .error-msg {
+    font-size: 13px;
+    color: #e53e3e;
+    margin-top: 8px;
+    display: none;
+  }
+  .error-msg.show { display: block; }
+
+  @media (max-width: 600px) {
+    .top-bar { padding: 16px 20px; }
+    .nav-row { padding: 16px 20px; }
+    .options.cols-2, .options.cols-3 { grid-template-columns: 1fr; }
+    .field-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<header class="top-bar">
+  <a href="index.html" class="brand">
+    <div class="brand-dot">P</div>
+    Personal Assistant · Phuket
+  </a>
+  <div class="step-counter" id="stepCounter"></div>
+</header>
+
+<!-- PROGRESS BAR -->
+<div class="progress-wrap">
+  <div class="progress-fill" id="progressFill" style="width:0%"></div>
+</div>
+
+<!-- MAIN CONTENT -->
+<main>
+
+  <!-- WELCOME -->
+  <div class="step active" id="step-0">
+    <div class="welcome-content">
+      <div class="welcome-badge">Now hiring · Phuket · Full-time</div>
+      <h1>Apply for the<br><em>Personal Assistant</em> role.</h1>
+      <p>This takes about 5 minutes. We read every application personally and reply to all serious candidates within a week.</p>
+      <button class="btn btn-next" onclick="goToStep(1)" style="margin:0 auto;display:flex;">
+        Start application →
+      </button>
+      <div class="welcome-meta">
+        <span>📋 13 questions</span>
+        <span>⏱ ~5 minutes</span>
+        <span>✉️ We reply within a week</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q1: FULL NAME -->
+  <div class="step" id="step-1">
+    <div class="step-label">Question 1 of 13</div>
+    <h2>What's your <em>full name?</em></h2>
+    <p class="hint">First and last name.</p>
+    <input class="input-field" type="text" id="q1" placeholder="e.g. Nattaya Srisuk" autocomplete="name" />
+    <div class="error-msg" id="err-1">Please enter your full name.</div>
+    <p class="keyboard-hint">Press <kbd>Enter ↵</kbd> to continue</p>
+  </div>
+
+  <!-- Q2: EMAIL -->
+  <div class="step" id="step-2">
+    <div class="step-label">Question 2 of 13</div>
+    <h2>Your <em>email address.</em></h2>
+    <p class="hint">We'll use this to get back to you.</p>
+    <input class="input-field" type="email" id="q2" placeholder="your@email.com" autocomplete="email" />
+    <div class="error-msg" id="err-2">Please enter a valid email address.</div>
+    <p class="keyboard-hint">Press <kbd>Enter ↵</kbd> to continue</p>
+  </div>
+
+  <!-- Q3: PHONE -->
+  <div class="step" id="step-3">
+    <div class="step-label">Question 3 of 13</div>
+    <h2>Your <em>phone number.</em></h2>
+    <p class="hint">WhatsApp preferred — this is how we'll reach you for a first call.</p>
+    <input class="input-field" type="tel" id="q3" placeholder="+66 81 234 5678" autocomplete="tel" />
+    <div class="error-msg" id="err-3">Please enter your phone number.</div>
+    <p class="keyboard-hint">Press <kbd>Enter ↵</kbd> to continue</p>
+  </div>
+
+  <!-- Q4: PHUKET? -->
+  <div class="step" id="step-4">
+    <div class="step-label">Question 4 of 13</div>
+    <h2>Are you currently <em>based in Phuket?</em></h2>
+    <p class="hint">This role requires full-time, year-round presence on the island.</p>
+    <div class="options cols-2" id="opts-4">
+      <div class="option" data-q="4" data-val="yes">
+        <div class="option-letter">A</div>
+        <div class="option-text">Yes, I live in Phuket</div>
+      </div>
+      <div class="option" data-q="4" data-val="no">
+        <div class="option-letter">B</div>
+        <div class="option-text">No, not currently</div>
+      </div>
+    </div>
+    <div class="disq-box" id="disq-4">
+      <div class="disq-icon">🏝️</div>
+      <h3>Thank you for your interest.</h3>
+      <p>Unfortunately, this role requires you to be based in Phuket full-time. If your situation changes, feel free to apply again.</p>
+    </div>
+    <div class="error-msg" id="err-4">Please select an option.</div>
+  </div>
+
+  <!-- Q5: ENGLISH LEVEL -->
+  <div class="step" id="step-5">
+    <div class="step-label">Question 5 of 13</div>
+    <h2>How would you rate your <em>English?</em></h2>
+    <p class="hint">Be honest — you'll communicate with us daily in English.</p>
+    <div class="options" id="opts-5">
+      <div class="option" data-q="5" data-val="conversational">
+        <div class="option-letter">A</div>
+        <div class="option-text">Conversational — I can get things done but sometimes struggle</div>
+      </div>
+      <div class="option" data-q="5" data-val="fluent">
+        <div class="option-letter">B</div>
+        <div class="option-text">Fluent — I'm comfortable in most situations</div>
+      </div>
+      <div class="option" data-q="5" data-val="native">
+        <div class="option-letter">C</div>
+        <div class="option-text">Native or near-native — I think in English</div>
+      </div>
+    </div>
+    <div class="error-msg" id="err-5">Please select your level.</div>
+  </div>
+
+  <!-- Q6: THAI LEVEL -->
+  <div class="step" id="step-6">
+    <div class="step-label">Question 6 of 13</div>
+    <h2>And your <em>Thai?</em></h2>
+    <p class="hint">You'll regularly communicate with local providers, services, and vendors in Thai.</p>
+    <div class="options" id="opts-6">
+      <div class="option" data-q="6" data-val="conversational">
+        <div class="option-letter">A</div>
+        <div class="option-text">Conversational — basics covered</div>
+      </div>
+      <div class="option" data-q="6" data-val="fluent">
+        <div class="option-letter">B</div>
+        <div class="option-text">Fluent — comfortable in most situations</div>
+      </div>
+      <div class="option" data-q="6" data-val="native">
+        <div class="option-letter">C</div>
+        <div class="option-text">Native — Thai is my first language</div>
+      </div>
+    </div>
+    <div class="error-msg" id="err-6">Please select your level.</div>
+  </div>
+
+  <!-- Q7: DRIVING LICENSE -->
+  <div class="step" id="step-7">
+    <div class="step-label">Question 7 of 13</div>
+    <h2>Do you have a <em>valid driving license?</em></h2>
+    <p class="hint">You'll need to get around Phuket independently for errands and tasks.</p>
+    <div class="options cols-2" id="opts-7">
+      <div class="option" data-q="7" data-val="scooter">
+        <div class="option-letter">A</div>
+        <div class="option-text">Scooter license</div>
+      </div>
+      <div class="option" data-q="7" data-val="car">
+        <div class="option-letter">B</div>
+        <div class="option-text">Car license</div>
+      </div>
+      <div class="option" data-q="7" data-val="both">
+        <div class="option-letter">C</div>
+        <div class="option-text">Both</div>
+      </div>
+      <div class="option" data-q="7" data-val="none">
+        <div class="option-letter">D</div>
+        <div class="option-text">Neither</div>
+      </div>
+    </div>
+    <div class="error-msg" id="err-7">Please select an option.</div>
+  </div>
+
+  <!-- Q8: VEHICLE -->
+  <div class="step" id="step-8">
+    <div class="step-label">Question 8 of 13</div>
+    <h2>Do you have a <em>personal vehicle</em> available?</h2>
+    <div class="options" id="opts-8">
+      <div class="option" data-q="8" data-val="scooter">
+        <div class="option-letter">A</div>
+        <div class="option-text">Yes — a scooter</div>
+      </div>
+      <div class="option" data-q="8" data-val="car">
+        <div class="option-letter">B</div>
+        <div class="option-text">Yes — a car</div>
+      </div>
+      <div class="option" data-q="8" data-val="both">
+        <div class="option-letter">C</div>
+        <div class="option-text">Yes — both</div>
+      </div>
+      <div class="option" data-q="8" data-val="no">
+        <div class="option-letter">D</div>
+        <div class="option-text">No, but I can arrange transport</div>
+      </div>
+    </div>
+    <div class="error-msg" id="err-8">Please select an option.</div>
+  </div>
+
+  <!-- Q9: EXPERIENCE -->
+  <div class="step" id="step-9">
+    <div class="step-label">Question 9 of 13</div>
+    <h2>Have you worked in a <em>personal assistant, coordination, or hospitality</em> role before?</h2>
+    <div class="options cols-3" id="opts-9">
+      <div class="option" data-q="9" data-val="yes">
+        <div class="option-letter">A</div>
+        <div class="option-text">Yes, directly</div>
+      </div>
+      <div class="option" data-q="9" data-val="similar">
+        <div class="option-letter">B</div>
+        <div class="option-text">Something similar</div>
+      </div>
+      <div class="option" data-q="9" data-val="no">
+        <div class="option-letter">C</div>
+        <div class="option-text">Not really</div>
+      </div>
+    </div>
+    <div class="error-msg" id="err-9">Please select an option.</div>
+  </div>
+
+  <!-- Q10: BACKGROUND -->
+  <div class="step" id="step-10">
+    <div class="step-label">Question 10 of 13</div>
+    <h2>Tell us about your <em>relevant experience.</em></h2>
+    <p class="hint">Where did you work? What did you do? If you don't have direct experience, share what you've done instead — that's fine too.</p>
+    <textarea class="input-field" id="q10" placeholder="e.g. I worked for 2 years as a personal assistant to a family in Phuket. I managed appointments, travel, and household admin. Before that I worked in hotel guest relations at..."></textarea>
+    <div class="error-msg" id="err-10">Please write at least a few sentences.</div>
+  </div>
+
+  <!-- Q11: WHY THIS ROLE -->
+  <div class="step" id="step-11">
+    <div class="step-label">Question 11 of 13</div>
+    <h2>Why does <em>this role</em> appeal to you?</h2>
+    <p class="hint">Tell us a bit about who you are and why you're applying. This is the most important question — take your time.</p>
+    <textarea class="input-field" id="q11" placeholder="e.g. I'm someone who thrives on making other people's lives run smoothly. I love the variety this role offers..."></textarea>
+    <div class="error-msg" id="err-11">Please write at least a few sentences — this one matters.</div>
+  </div>
+
+  <!-- Q12: START DATE + SALARY -->
+  <div class="step" id="step-12">
+    <div class="step-label">Question 12 of 13</div>
+    <h2>A few practical details.</h2>
+    <p class="hint">Almost done — two quick ones.</p>
+    <label style="display:block;font-size:14px;font-weight:600;color:var(--muted);margin-bottom:8px;letter-spacing:0.05em;text-transform:uppercase;">When can you start?</label>
+    <input class="input-field sm" type="text" id="q12a" placeholder="e.g. Immediately, or June 15" style="margin-bottom:36px;" />
+    <label style="display:block;font-size:14px;font-weight:600;color:var(--muted);margin-bottom:8px;letter-spacing:0.05em;text-transform:uppercase;">Expected monthly salary (THB)</label>
+    <input class="input-field sm" type="number" id="q12b" placeholder="e.g. 35000" min="0" />
+    <div class="error-msg" id="err-12">Please fill in both fields.</div>
+  </div>
+
+  <!-- Q13: CV + ANYTHING ELSE -->
+  <div class="step" id="step-13">
+    <div class="step-label">Question 13 of 13</div>
+    <h2>Last step — <em>almost there.</em></h2>
+    <p class="hint">Share a CV link if you have one, and anything else you'd like us to know.</p>
+    <label style="display:block;font-size:14px;font-weight:600;color:var(--muted);margin-bottom:8px;letter-spacing:0.05em;text-transform:uppercase;">CV or LinkedIn link <span style="font-weight:400;text-transform:none;letter-spacing:0;">(optional)</span></label>
+    <input class="input-field sm" type="url" id="q13a" placeholder="https://linkedin.com/in/..." style="margin-bottom:36px;" />
+    <label style="display:block;font-size:14px;font-weight:600;color:var(--muted);margin-bottom:8px;letter-spacing:0.05em;text-transform:uppercase;">Anything else to add? <span style="font-weight:400;text-transform:none;letter-spacing:0;">(optional)</span></label>
+    <textarea class="input-field" id="q13b" placeholder="Any other context that might be useful for us to know..." style="min-height:120px;"></textarea>
+    <div class="error-msg" id="err-13"></div>
+  </div>
+
+  <!-- CONFIRMATION -->
+  <div class="step" id="step-confirm">
+    <div class="confirm-content">
+      <div class="confirm-icon">✓</div>
+      <h2>Application received.</h2>
+      <p>Thank you for applying! We read every application personally and will get back to you within a week if we'd like to move forward.</p>
+      <a href="index.html" class="confirm-back">← Back to job page</a>
+    </div>
+  </div>
+
+</main>
+
+<!-- NAVIGATION BUTTONS -->
+<nav class="nav-row" id="navRow">
+  <button class="btn btn-back" id="btnBack" onclick="prevStep()" style="visibility:hidden;">← Back</button>
+  <button class="btn btn-next" id="btnNext" onclick="nextStep()">Continue →</button>
+</nav>
+
+<script>
+  const TOTAL_QUESTIONS = 13;
+  let currentStep = 0;
+  let answers = {};
+
+  // Map of step → selected option value (for option-card steps)
+  const optionSteps = [4, 5, 6, 7, 8, 9];
+
+  function updateUI() {
+    const isWelcome = currentStep === 0;
+    const isConfirm = currentStep === 14;
+
+    // Progress
+    const pct = isWelcome ? 0 : Math.round((currentStep / TOTAL_QUESTIONS) * 100);
+    document.getElementById('progressFill').style.width = pct + '%';
+
+    // Counter
+    const counter = document.getElementById('stepCounter');
+    if (isWelcome || isConfirm) {
+      counter.textContent = '';
+    } else {
+      counter.textContent = `${currentStep} / ${TOTAL_QUESTIONS}`;
+    }
+
+    // Nav row
+    const navRow = document.getElementById('navRow');
+    const btnBack = document.getElementById('btnBack');
+    const btnNext = document.getElementById('btnNext');
+
+    if (isWelcome) {
+      navRow.style.display = 'none';
+    } else if (isConfirm) {
+      navRow.style.display = 'none';
+    } else {
+      navRow.style.display = 'flex';
+      btnBack.style.visibility = currentStep > 1 ? 'visible' : 'hidden';
+      btnNext.textContent = currentStep === TOTAL_QUESTIONS ? 'Submit application →' : 'Continue →';
+    }
+  }
+
+  function showStep(n) {
+    // Hide all
+    document.querySelectorAll('.step').forEach(s => {
+      s.classList.remove('active');
+    });
+
+    // Show target
+    const target = n === 14
+      ? document.getElementById('step-confirm')
+      : document.getElementById('step-' + n);
+
+    if (target) {
+      target.classList.add('active');
+      // Focus first input if any
+      setTimeout(() => {
+        const input = target.querySelector('input, textarea');
+        if (input) input.focus();
+      }, 350);
+    }
+
+    currentStep = n;
+    updateUI();
+  }
+
+  function goToStep(n) {
+    showStep(n);
+  }
+
+  function validate(step) {
+    const errEl = document.getElementById('err-' + step);
+    const hide = () => { if (errEl) errEl.classList.remove('show'); };
+    const show = (msg) => { if (errEl) { errEl.textContent = msg; errEl.classList.add('show'); } };
+
+    if (step === 1) {
+      const v = (document.getElementById('q1')?.value || '').trim();
+      if (!v) { show('Please enter your full name.'); return false; }
+      hide(); return true;
+    }
+    if (step === 2) {
+      const v = (document.getElementById('q2')?.value || '').trim();
+      const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRe.test(v)) { show('Please enter a valid email address.'); return false; }
+      hide(); return true;
+    }
+    if (step === 3) {
+      const v = (document.getElementById('q3')?.value || '').trim();
+      if (!v) { show('Please enter your phone number.'); return false; }
+      hide(); return true;
+    }
+    if (step === 4) {
+      if (!answers[4]) { show('Please select an option.'); return false; }
+      if (answers[4] === 'no') {
+        document.getElementById('disq-4').classList.add('show');
+        document.getElementById('opts-4').style.display = 'none';
+        document.getElementById('navRow').style.display = 'none';
+        return false;
+      }
+      hide(); return true;
+    }
+    if ([5,6,7,8,9].includes(step)) {
+      if (!answers[step]) { show('Please select an option.'); return false; }
+      hide(); return true;
+    }
+    if (step === 10) {
+      const v = (document.getElementById('q10')?.value || '').trim();
+      if (v.length < 20) { show('Please write at least a few sentences.'); return false; }
+      hide(); return true;
+    }
+    if (step === 11) {
+      const v = (document.getElementById('q11')?.value || '').trim();
+      if (v.length < 30) { show('Please write at least a few sentences — this one matters.'); return false; }
+      hide(); return true;
+    }
+    if (step === 12) {
+      const a = (document.getElementById('q12a')?.value || '').trim();
+      const b = (document.getElementById('q12b')?.value || '').trim();
+      if (!a || !b) { show('Please fill in both fields.'); return false; }
+      hide(); return true;
+    }
+    if (step === 13) {
+      // Optional fields — always valid
+      return true;
+    }
+    return true;
+  }
+
+  function nextStep() {
+    if (!validate(currentStep)) return;
+
+    // Collect text input values
+    const inputs = {
+      1: 'q1', 2: 'q2', 3: 'q3',
+      10: 'q10', 11: 'q11',
+      12: ['q12a', 'q12b'],
+      13: ['q13a', 'q13b']
+    };
+
+    if (inputs[currentStep]) {
+      if (Array.isArray(inputs[currentStep])) {
+        inputs[currentStep].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) answers[id] = el.value;
+        });
+      } else {
+        const el = document.getElementById(inputs[currentStep]);
+        if (el) answers[currentStep] = el.value;
+      }
+    }
+
+    if (currentStep === TOTAL_QUESTIONS) {
+      submitForm();
+      return;
+    }
+
+    showStep(currentStep + 1);
+  }
+
+  function prevStep() {
+    if (currentStep <= 1) return;
+    showStep(currentStep - 1);
+  }
+
+  function submitForm() {
+    // Here you would normally POST to your backend / Formspree
+    // For now, we just show the confirmation screen
+    console.log('Form answers:', answers);
+    showStep(14);
+  }
+
+  // Option card selection
+  document.addEventListener('click', function(e) {
+    const opt = e.target.closest('.option');
+    if (!opt) return;
+    const q = parseInt(opt.dataset.q);
+    const val = opt.dataset.val;
+    if (!q) return;
+
+    // Deselect others in group
+    document.querySelectorAll(`.option[data-q="${q}"]`).forEach(o => o.classList.remove('selected'));
+    opt.classList.add('selected');
+    answers[q] = val;
+
+    // Auto-advance for single-choice questions (except Q4 to show disq message)
+    const autoAdvance = [5, 6, 7, 8, 9];
+    if (autoAdvance.includes(q)) {
+      setTimeout(() => nextStep(), 320);
+    }
+    if (q === 4 && val === 'yes') {
+      setTimeout(() => nextStep(), 320);
+    }
+    if (q === 4 && val === 'no') {
+      setTimeout(() => validate(4), 320);
+    }
+  });
+
+  // Keyboard Enter to advance
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && currentStep > 0 && currentStep < 14) {
+      const active = document.querySelector('.step.active');
+      if (!active) return;
+      const textarea = active.querySelector('textarea');
+      // Don't intercept Enter in textareas
+      if (textarea && document.activeElement === textarea) return;
+      nextStep();
+    }
+  });
+
+  // Init
+  updateUI();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Personal Assistant — Phuket</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fafaf8;
+    --bg-warm: #f5f2ec;
+    --ink: #0a0a0a;
+    --ink-2: #1a1a1a;
+    --ink-soft: #4a4a4a;
+    --muted: #888;
+    --line: #ececec;
+    --line-dark: #222;
+    --card: #ffffff;
+    --orange: #ff5a1f;
+    --orange-2: #ff8246;
+    --orange-soft: #fff1ea;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 8px rgba(0,0,0,0.04), 0 20px 40px rgba(0,0,0,0.08);
+    --shadow-lg: 0 10px 20px rgba(0,0,0,0.06), 0 40px 80px rgba(0,0,0,0.12);
+    --shadow-orange: 0 8px 24px rgba(255, 90, 31, 0.35), 0 1px 2px rgba(255, 90, 31, 0.2);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  .container {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  /* SUBTLE DOT PATTERN BG */
+  .dot-bg {
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgba(0,0,0,0.06) 1px, transparent 1px);
+    background-size: 24px 24px;
+    mask-image: radial-gradient(ellipse at center top, black 30%, transparent 70%);
+    -webkit-mask-image: radial-gradient(ellipse at center top, black 30%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* NAV */
+  nav.top {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    padding: 16px 0;
+    background: rgba(250, 250, 248, 0.7);
+    backdrop-filter: saturate(180%) blur(16px);
+    -webkit-backdrop-filter: saturate(180%) blur(16px);
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+  }
+  nav.top .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: -0.01em;
+  }
+  .logo-dot {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--orange) 0%, var(--orange-2) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: 14px;
+    box-shadow: 0 4px 12px rgba(255, 90, 31, 0.35);
+  }
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+  .nav-link {
+    color: var(--ink-soft);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+  .nav-link:hover { color: var(--ink); }
+  .nav-cta {
+    background: var(--ink);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 100px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .nav-cta:hover { background: var(--orange); }
+
+  .nav-spacer { height: 70px; }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    padding: 70px 0 100px;
+    overflow: hidden;
+    text-align: center;
+  }
+  .hero .container { position: relative; z-index: 1; }
+  .hero-inner {
+    max-width: 860px;
+    margin: 0 auto;
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px 6px 8px;
+    background: var(--orange-soft);
+    border: 1px solid rgba(255, 90, 31, 0.2);
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--orange);
+    margin-bottom: 32px;
+  }
+  .badge-pill {
+    background: var(--orange);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+  .hero h1 {
+    font-family: 'Inter', sans-serif;
+    font-size: clamp(40px, 5.6vw, 72px);
+    font-weight: 600;
+    line-height: 1.04;
+    letter-spacing: -0.035em;
+    margin-bottom: 28px;
+  }
+  .hero h1 em {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-weight: 400;
+    background: linear-gradient(120deg, var(--orange) 0%, var(--orange-2) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    letter-spacing: -0.02em;
+  }
+  .hero p.lead {
+    font-size: 19px;
+    color: var(--ink-soft);
+    margin: 0 auto 44px;
+    max-width: 680px;
+    line-height: 1.55;
+  }
+  .cta-row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 24px;
+    border-radius: 100px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 15px;
+    transition: all 0.25s cubic-bezier(.2,.8,.2,1);
+    border: none;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .btn-primary {
+    background: linear-gradient(180deg, var(--orange-2) 0%, var(--orange) 100%);
+    color: white;
+    box-shadow: var(--shadow-orange);
+  }
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 28px rgba(255, 90, 31, 0.45), 0 2px 4px rgba(255, 90, 31, 0.3);
+  }
+  .btn-primary:active { transform: translateY(0); }
+  .btn-ghost {
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--line);
+  }
+  .btn-ghost:hover {
+    background: var(--card);
+    border-color: rgba(0,0,0,0.15);
+  }
+  .btn .arrow { transition: transform 0.2s ease; }
+  .btn:hover .arrow { transform: translateX(3px); }
+
+  .hero-meta {
+    margin-top: 40px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 13px;
+    color: var(--muted);
+    justify-content: center;
+  }
+  .avatars { display: flex; }
+  .avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid var(--bg);
+    background: linear-gradient(135deg, #ffd2b8 0%, #ff8246 100%);
+    margin-left: -8px;
+  }
+  .avatar:first-child { margin-left: 0; background: linear-gradient(135deg, #ffb993 0%, #ff5a1f 100%); }
+  .avatar:nth-child(2) { background: linear-gradient(135deg, #c4a484 0%, #6b4f3a 100%); }
+
+  /* HERO CARDS ROW — horizontal preview below text */
+  .hero-cards {
+    margin-top: 90px;
+    display: flex;
+    justify-content: center;
+    gap: 18px;
+    flex-wrap: wrap;
+    position: relative;
+    text-align: left;
+  }
+  .hero-cards::before {
+    content: "";
+    position: absolute;
+    inset: -50px -100px;
+    background: radial-gradient(ellipse at center, rgba(255, 90, 31, 0.14), transparent 65%);
+    filter: blur(50px);
+    z-index: 0;
+    pointer-events: none;
+  }
+  .task-mock {
+    position: relative;
+    z-index: 1;
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid rgba(0,0,0,0.04);
+    width: 290px;
+    transition: transform 0.3s ease;
+  }
+  .task-mock.m1 { transform: rotate(-2.5deg); }
+  .task-mock.m2 { transform: translateY(-14px); z-index: 2; }
+  .task-mock.m3 { transform: rotate(2.5deg); }
+  .task-mock:hover { transform: translateY(-6px) rotate(0deg); }
+  .task-mock-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .task-tag {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 6px;
+  }
+  .tag-health { background: #e7f3ec; color: #2c7a4b; }
+  .tag-travel { background: #e8efff; color: #2851a3; }
+  .tag-food { background: var(--orange-soft); color: var(--orange); }
+  .task-check {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #e8f3ec;
+    color: #2c7a4b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .task-check.pending { background: #f5f5f5; color: #aaa; }
+  .task-title {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    letter-spacing: -0.01em;
+  }
+  .task-sub {
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .task-foot {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .task-foot strong { color: var(--ink); font-weight: 500; }
+
+  /* SECTIONS */
+  section.block { padding: 110px 0; position: relative; }
+  .section-tag {
+    display: inline-block;
+    font-size: 13px;
+    color: var(--orange);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .section-title {
+    font-family: 'Inter', sans-serif;
+    font-size: clamp(34px, 4vw, 48px);
+    font-weight: 600;
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    margin-bottom: 20px;
+    max-width: 720px;
+  }
+  .section-title em {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-weight: 400;
+    color: var(--orange);
+  }
+  .section-intro {
+    font-size: 18px;
+    color: var(--ink-soft);
+    max-width: 600px;
+    line-height: 1.55;
+  }
+  .section-header { margin-bottom: 60px; }
+
+  /* ABOUT */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+  .about-text p {
+    font-size: 17px;
+    color: var(--ink-soft);
+    margin-bottom: 20px;
+    line-height: 1.65;
+  }
+  .about-text strong { color: var(--ink); font-weight: 600; }
+  .about-quote {
+    margin-top: 30px;
+    padding: 24px;
+    background: var(--bg-warm);
+    border-left: 3px solid var(--orange);
+    border-radius: 4px;
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: 19px;
+    line-height: 1.5;
+    color: var(--ink);
+  }
+  .about-image-wrap {
+    position: relative;
+    height: 540px;
+  }
+  .about-img {
+    position: absolute;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    background-size: cover;
+    background-position: center;
+  }
+  .about-img-1 {
+    top: 0;
+    right: 0;
+    width: 75%;
+    height: 65%;
+    background-image: url('https://images.unsplash.com/photo-1589394815804-964ed0be2eb5?auto=format&fit=crop&w=900&q=80');
+  }
+  .about-img-2 {
+    bottom: 0;
+    left: 0;
+    width: 60%;
+    height: 50%;
+    background-image: url('https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?auto=format&fit=crop&w=700&q=80');
+    border: 6px solid var(--bg);
+  }
+
+  /* TASKS */
+  .tasks-section { background: var(--bg-warm); position: relative; }
+  .tasks-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .task-card {
+    background: white;
+    padding: 28px;
+    border-radius: 18px;
+    border: 1px solid rgba(0,0,0,0.04);
+    transition: all 0.3s cubic-bezier(.2,.8,.2,1);
+    position: relative;
+    overflow: hidden;
+  }
+  .task-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--orange), var(--orange-2));
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .task-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+    border-color: rgba(255, 90, 31, 0.15);
+  }
+  .task-card:hover::before { opacity: 1; }
+  .task-card:hover .icon-wrap {
+    background: linear-gradient(135deg, var(--orange) 0%, var(--orange-2) 100%);
+    color: white;
+  }
+  .icon-wrap {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--orange-soft);
+    color: var(--orange);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 22px;
+    transition: all 0.3s;
+  }
+  .icon-wrap svg { width: 22px; height: 22px; stroke-width: 1.75; }
+  .task-card h3 {
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin-bottom: 8px;
+  }
+  .task-card p {
+    font-size: 14px;
+    color: var(--ink-soft);
+    line-height: 1.55;
+  }
+
+  /* LIFESTYLE GALLERY */
+  .gallery-section {
+    padding: 0;
+    background: var(--bg);
+  }
+  .gallery {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr;
+    grid-template-rows: 280px 280px;
+    gap: 12px;
+    padding: 0 32px;
+    max-width: 1320px;
+    margin: 0 auto;
+  }
+  .gallery-item {
+    border-radius: 18px;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    transition: transform 0.4s ease;
+  }
+  .gallery-item:hover { transform: scale(0.98); }
+  .gallery-item::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.5), transparent 50%);
+  }
+  .gallery-caption {
+    position: absolute;
+    bottom: 18px;
+    left: 20px;
+    z-index: 1;
+    color: white;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+  .gallery-1 {
+    grid-row: 1 / 3;
+    background-image: url('https://images.unsplash.com/photo-1537956965359-7573183d1f57?auto=format&fit=crop&w=900&q=80');
+  }
+  .gallery-2 {
+    background-image: url('https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=800&q=80');
+  }
+  .gallery-3 {
+    background-image: url('https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=800&q=80');
+  }
+  .gallery-4 {
+    background-image: url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=800&q=80');
+  }
+  .gallery-5 {
+    background-image: url('https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=800&q=80');
+  }
+
+  /* PROFILE — DARK */
+  .profile {
+    background: var(--ink);
+    color: white;
+    position: relative;
+    overflow: hidden;
+  }
+  .profile::before {
+    content: "";
+    position: absolute;
+    top: -200px;
+    right: -200px;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(255, 90, 31, 0.15), transparent 70%);
+    pointer-events: none;
+  }
+  .profile .container { position: relative; z-index: 1; }
+  .profile .section-tag { color: var(--orange-2); }
+  .profile .section-title { color: white; }
+  .profile .section-title em { color: var(--orange-2); }
+  .profile .section-intro { color: rgba(255,255,255,0.65); }
+
+  .req-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+  .req-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    padding: 24px;
+    border-radius: 14px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    transition: all 0.3s;
+  }
+  .req-card:hover {
+    background: rgba(255,255,255,0.06);
+    border-color: rgba(255, 90, 31, 0.3);
+  }
+  .req-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--orange) 0%, var(--orange-2) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: white;
+    box-shadow: 0 4px 12px rgba(255, 90, 31, 0.3);
+  }
+  .req-icon svg { width: 18px; height: 18px; stroke-width: 2; }
+  .req-card h4 {
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+    margin-bottom: 6px;
+    letter-spacing: -0.01em;
+  }
+  .req-card p {
+    font-size: 14px;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.5;
+  }
+  .nice-section {
+    margin-top: 20px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    padding: 28px 32px;
+    border-radius: 14px;
+  }
+  .nice-label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--orange-2);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .nice-label::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: rgba(255,255,255,0.1);
+  }
+  .nice-items { display: grid; gap: 14px; }
+  .nice-item {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    font-size: 15px;
+    color: rgba(255,255,255,0.78);
+    line-height: 1.5;
+  }
+  .nice-plus {
+    color: var(--orange-2);
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 1.3;
+    flex-shrink: 0;
+  }
+
+  /* WHY IT'S GREAT */
+  .why-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+  .why-image-wrap {
+    position: relative;
+    height: 520px;
+  }
+  .why-img-main {
+    position: absolute;
+    inset: 0;
+    border-radius: 22px;
+    background-image: url('https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=900&q=80');
+    background-size: cover;
+    background-position: center;
+    box-shadow: var(--shadow-lg);
+  }
+  .why-img-badge {
+    position: absolute;
+    bottom: 24px;
+    left: 24px;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(10px);
+    padding: 14px 18px;
+    border-radius: 14px;
+    box-shadow: var(--shadow-md);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .why-img-badge .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #2c7a4b;
+    box-shadow: 0 0 0 4px rgba(44, 122, 75, 0.15);
+  }
+  .why-img-badge span {
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .why-list { display: grid; gap: 24px; }
+  .why-item {
+    display: flex;
+    gap: 18px;
+    align-items: flex-start;
+  }
+  .why-num {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: 36px;
+    font-weight: 400;
+    background: linear-gradient(135deg, var(--orange) 0%, var(--orange-2) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    line-height: 1;
+    flex-shrink: 0;
+    min-width: 50px;
+  }
+  .why-item h4 {
+    font-size: 19px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin-bottom: 6px;
+  }
+  .why-item p {
+    font-size: 15px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+  }
+
+  /* FINAL CTA */
+  .final-cta {
+    position: relative;
+    padding: 120px 32px;
+    margin: 0 32px;
+    border-radius: 32px;
+    background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+    overflow: hidden;
+    margin-bottom: 60px;
+    text-align: center;
+  }
+  .final-cta::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 30% 40%, rgba(255, 90, 31, 0.25), transparent 50%),
+                radial-gradient(circle at 70% 60%, rgba(255, 130, 70, 0.2), transparent 50%);
+  }
+  .final-cta::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+  .final-cta-inner {
+    position: relative;
+    z-index: 1;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  .final-cta h2 {
+    font-family: 'Inter', sans-serif;
+    color: white;
+    font-size: clamp(40px, 5.5vw, 60px);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    margin-bottom: 24px;
+  }
+  .final-cta h2 em {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-weight: 400;
+    background: linear-gradient(120deg, var(--orange) 0%, var(--orange-2) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .final-cta p {
+    font-size: 19px;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 40px;
+    max-width: 540px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.5;
+  }
+  .btn-large {
+    padding: 18px 32px;
+    font-size: 16px;
+  }
+  .final-cta .cta-note {
+    margin-top: 24px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 40px 0 60px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  footer .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 960px) {
+    .hero-cards { margin-top: 60px; gap: 14px; }
+    .task-mock { width: 100%; max-width: 320px; }
+    .task-mock.m1, .task-mock.m2, .task-mock.m3 { transform: none; }
+    .about-grid { grid-template-columns: 1fr; gap: 50px; }
+    .about-image-wrap { height: 420px; max-width: 500px; margin: 0 auto; width: 100%; }
+    .tasks-grid { grid-template-columns: 1fr 1fr; }
+    .gallery { grid-template-columns: 1fr 1fr; grid-template-rows: 240px 240px 240px; }
+    .gallery-1 { grid-row: 1 / 2; grid-column: 1 / 3; }
+    .req-grid { grid-template-columns: 1fr; }
+    .why-grid { grid-template-columns: 1fr; gap: 50px; }
+    .why-image-wrap { height: 380px; }
+    section.block { padding: 80px 0; }
+    .hero { padding: 60px 0 80px; }
+  }
+  @media (max-width: 600px) {
+    .container { padding: 0 24px; }
+    .tasks-grid { grid-template-columns: 1fr; }
+    .gallery { padding: 0 16px; }
+    .nav-right .nav-link { display: none; }
+    .final-cta { margin: 0 16px; padding: 80px 24px; border-radius: 24px; }
+    footer .container { flex-direction: column; gap: 12px; }
+    .bonus-card { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div class="container">
+    <div class="logo">
+      <div class="logo-dot">P</div>
+      <span>Personal Assistant · Phuket</span>
+    </div>
+    <div class="nav-right">
+      <a href="#role" class="nav-link">The role</a>
+      <a href="#tasks" class="nav-link">Tasks</a>
+      <a href="#profile" class="nav-link">Profile</a>
+      <a href="#apply" class="nav-cta">Apply</a>
+    </div>
+  </div>
+</nav>
+<div class="nav-spacer"></div>
+
+<section class="hero">
+  <div class="dot-bg"></div>
+  <div class="container">
+    <div class="hero-inner">
+      <div class="badge">
+        <span class="badge-pill">New</span>
+        <span>Now hiring in Phuket · Full-time</span>
+      </div>
+      <h1>Become the Personal Assistant of <em>two entrepreneurs in Phuket.</em></h1>
+      <p class="lead">A full-time role supporting two entrepreneurs across their daily life and work — from travel plans and appointments to bookings, errands, and admin. Both on the ground around Phuket and remotely from home.</p>
+      <div class="cta-row">
+        <a href="https://form.typeform.com/to/zRt4b5q8" target="_blank" class="btn btn-primary btn-large">
+          Apply now
+          <span class="arrow">→</span>
+        </a>
+        <a href="#role" class="btn btn-ghost">See the role</a>
+      </div>
+      <div class="hero-meta">
+        <div class="avatars">
+          <div class="avatar"></div>
+          <div class="avatar"></div>
+        </div>
+        <span>Full-time · Long-term · Above-market pay</span>
+      </div>
+    </div>
+
+    <div class="hero-cards">
+      <div class="task-mock m1">
+        <div class="task-mock-head">
+          <span class="task-tag tag-travel">Travel</span>
+          <div class="task-check">✓</div>
+        </div>
+        <div class="task-title">Bangkok trip — 3 hotels shortlisted</div>
+        <div class="task-sub">Sukhumvit area, 22–25 May</div>
+        <div class="task-foot">
+          <span>Booked · <strong>Mandarin Oriental</strong></span>
+          <span>2h ago</span>
+        </div>
+      </div>
+
+      <div class="task-mock m2">
+        <div class="task-mock-head">
+          <span class="task-tag tag-health">Health</span>
+          <div class="task-check">✓</div>
+        </div>
+        <div class="task-title">Dentist appointment confirmed</div>
+        <div class="task-sub">Dr. Sirin · Tuesday 2:00 PM</div>
+        <div class="task-foot">
+          <span><strong>Phuket Town</strong> · 15 min drive</span>
+          <span>Today</span>
+        </div>
+      </div>
+
+      <div class="task-mock m3">
+        <div class="task-mock-head">
+          <span class="task-tag tag-food">Dinner</span>
+          <div class="task-check pending">·</div>
+        </div>
+        <div class="task-title">Saturday dinner — 5 spots to pick</div>
+        <div class="task-sub">Beachfront, group of 6</div>
+        <div class="task-foot">
+          <span>Pending your <strong>choice</strong></span>
+          <span>2 min ago</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="role">
+  <div class="container">
+    <div class="about-grid">
+      <div>
+        <div class="section-tag">About the role</div>
+        <h2 class="section-title">A trusted right hand, <em>not a task runner.</em></h2>
+        <div class="about-text">
+          <p>We are <strong>two entrepreneurs</strong> based in Phuket, looking for a personal assistant to support us across our personal and lifestyle needs. The role is <strong>shared between our two households</strong>, so you will be working closely with both of us.</p>
+          <p>A hands-on role mixing physical presence around Phuket and remote work depending on what is needed. You will handle a wide range of tasks across daily logistics, travel, errands, and life management. <strong>We will set up clear processes and tools with you</strong>, so you are never left guessing.</p>
+          <div class="about-quote">
+            "If you're organized, proactive, and enjoy making things effortless for others — we'd love to meet you."
+          </div>
+        </div>
+      </div>
+      <div class="about-image-wrap">
+        <div class="about-img about-img-1"></div>
+        <div class="about-img about-img-2"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block tasks-section" id="tasks">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">What you'll do</div>
+      <h2 class="section-title">A wide mix — <em>never boring.</em></h2>
+      <p class="section-intro">Here's a sample of what comes up. The list grows over time — what matters is that you take ownership and get things done.</p>
+    </div>
+
+    <div class="tasks-grid">
+      <div class="task-card">
+        <div class="icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 12L12 3l9 9M5 10v10h14V10" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h3>Home & errands</h3>
+        <p>Stock checks, deliveries, repairs, dealing with contractors — quotes, follow-ups, payments.</p>
+      </div>
+      <div class="task-card">
+        <div class="icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4zM3 6h18M16 10a4 4 0 01-8 0" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h3>Shopping & returns</h3>
+        <p>Clothing orders, light personal shopping, handling returns and customer service issues.</p>
+      </div>
+      <div class="task-card">
+        <div class="icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 000-7.78z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h3>Health & appointments</h3>
+        <p>Booking doctors, dentists, picking up results, translating when needed, reminders.</p>
+      </div>
+      <div class="task-card">
+        <div class="icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10" stroke-linecap="round"/><path d="M12 6v6l4 2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h3>Wellness & experiences</h3>
+        <p>Finding the best spas, massages, and great spots in Phuket — keeping a list of favorites.</p>
+      </div>
+      <div class="task-card">
+        <div class="icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h3>Travel planning</h3>
+        <p>Researching destinations, comparing flights and hotels, booking transfers and activities, check-ins.</p>
+      </div>
+      <div class="task-card">
+        <div class="icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 11l18-5v12L3 14v-3zM11.6 16.8a3 3 0 11-5.8-1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h3>Restaurants & outings</h3>
+        <p>Reservations (your Thai will be very helpful here), suggesting spots when we're undecided.</p>
+      </div>
+      <div class="task-card">
+        <div class="icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 12v10H4V12M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h3>Gifts & birthdays</h3>
+        <p>Birthday list with reminders, suggesting ideas, buying, wrapping, sending on time.</p>
+      </div>
+      <div class="task-card">
+        <div class="icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h3>Events & dinners</h3>
+        <p>Full logistics for dinners, parties, and group trips with friends — start to finish.</p>
+      </div>
+      <div class="task-card">
+        <div class="icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zM14 2v6h6M16 13H8M16 17H8M10 9H8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h3>Admin & paperwork</h3>
+        <p>Paying bills, physical photocopies, official errands, on-the-ground service hunting in Thai.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="gallery-section">
+  <div class="gallery">
+    <div class="gallery-item gallery-1">
+      <span class="gallery-caption">Phuket · Your home base</span>
+    </div>
+    <div class="gallery-item gallery-2">
+      <span class="gallery-caption">Local life · Markets & street</span>
+    </div>
+    <div class="gallery-item gallery-3">
+      <span class="gallery-caption">Online · Bookings & admin</span>
+    </div>
+    <div class="gallery-item gallery-4">
+      <span class="gallery-caption">Travel · Trip planning</span>
+    </div>
+    <div class="gallery-item gallery-5">
+      <span class="gallery-caption">Wellness · Spa & experiences</span>
+    </div>
+  </div>
+</section>
+
+<section class="block profile" id="profile">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">Who you are</div>
+      <h2 class="section-title">The right person <em>for this role.</em></h2>
+      <p class="section-intro">Not looking for a robot. Looking for someone genuinely good at making life easier for others — and honest enough to flag what's not working.</p>
+    </div>
+
+    <div class="req-grid">
+      <div class="req-card">
+        <div class="req-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="10" r="3" stroke-linecap="round"/></svg></div>
+        <div>
+          <h4>Based in Phuket</h4>
+          <p>Full-time, year-round. The role requires you to be on the island, available in person when needed.</p>
+        </div>
+      </div>
+      <div class="req-card">
+        <div class="req-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 12h18M3 6h18M3 18h18" stroke-linecap="round"/></svg></div>
+        <div>
+          <h4>Fluent English + Thai</h4>
+          <p>Both spoken and written, at a high level. Essential for daily communication with us and local providers.</p>
+        </div>
+      </div>
+      <div class="req-card">
+        <div class="req-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="6" cy="17" r="2.5" stroke-linecap="round"/><circle cx="18" cy="17" r="2.5" stroke-linecap="round"/><path d="M8 17h8M14 8h3l2 4M5 12l4-4h4l3 9" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div>
+          <h4>Valid driving license</h4>
+          <p>Scooter or car license required. A personal vehicle is a strong plus to move around the island independently.</p>
+        </div>
+      </div>
+      <div class="req-card">
+        <div class="req-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" stroke-linecap="round"/></svg></div>
+        <div>
+          <h4>Trusted with a bank account</h4>
+          <p>You'll manage a dedicated account with a clear monthly limit for errands, bookings, and day-to-day purchases.</p>
+        </div>
+      </div>
+      <div class="req-card">
+        <div class="req-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div>
+          <h4>Proactive & reactive</h4>
+          <p>You anticipate needs instead of waiting to be told, and follow up without being asked.</p>
+        </div>
+      </div>
+      <div class="req-card">
+        <div class="req-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10" stroke-linecap="round"/><path d="M12 6v6l4 2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div>
+          <h4>Full-time & flexible</h4>
+          <p>Available full-time with flexible hours. The role adapts day by day to what's needed.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="nice-section">
+      <div class="nice-label">Nice to have</div>
+      <div class="nice-items">
+        <div class="nice-item">
+          <span class="nice-plus">+</span>
+          <span>Previous experience as a personal assistant, house manager, or in hospitality</span>
+        </div>
+        <div class="nice-item">
+          <span class="nice-plus">+</span>
+          <span>Discreet and professional with sensitive personal information</span>
+        </div>
+        <div class="nice-item">
+          <span class="nice-plus">+</span>
+          <span>Comfortable with everyday tech: WhatsApp, Google Calendar, Maps, online booking sites</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block">
+  <div class="container">
+    <div class="why-grid">
+      <div>
+        <div class="section-tag">Why this role rocks</div>
+        <h2 class="section-title">More than a job — <em>a great daily life.</em></h2>
+        <div class="why-list">
+          <div class="why-item">
+            <div class="why-num">01</div>
+            <div>
+              <h4>Endless variety</h4>
+              <p>No two days are the same. One morning you're booking a clinic, the afternoon you're planning a Bangkok trip, the next day you're hunting a perfect spa.</p>
+            </div>
+          </div>
+          <div class="why-item">
+            <div class="why-num">02</div>
+            <div>
+              <h4>You run your own ship</h4>
+              <p>We trust you to handle things your way. No constant check-ins, no micro-management — just real ownership.</p>
+            </div>
+          </div>
+          <div class="why-item">
+            <div class="why-num">03</div>
+            <div>
+              <h4>Two easy-going founders</h4>
+              <p>We're friendly, respectful, no drama. You'll work with two chill people who appreciate good work and treat you as part of the team.</p>
+            </div>
+          </div>
+          <div class="why-item">
+            <div class="why-num">04</div>
+            <div>
+              <h4>Long-term & competitive</h4>
+              <p>Above-market pay, a real long-term role, and room to grow as we do.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="why-image-wrap">
+        <div class="why-img-main"></div>
+        <div class="why-img-badge">
+          <span class="dot"></span>
+          <span>Fun, varied, and chill — most days</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="final-cta" id="apply">
+  <div class="final-cta-inner">
+    <h2>Sounds like <em>you?</em></h2>
+    <p>Fill in the short application below — it takes about 5 minutes. We'll get back to every candidate we'd like to meet within a few days.</p>
+    <a href="https://form.typeform.com/to/zRt4b5q8" target="_blank" class="btn btn-primary btn-large" id="apply-button">
+      Start your application
+      <span class="arrow">→</span>
+    </a>
+    <div class="cta-note">5 minutes · English or Thai · We respond personally</div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div>Personal Assistant Role · Phuket · 2026</div>
+    <div>Two founders looking for one trusted hire.</div>
+  </div>
+</footer>
+
+</body>
+</html>
