@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Application Received — Personal Assistant · Phuket</title>
+<meta name="robots" content="noindex" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '1347473683378093');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=1347473683378093&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
+<style>
+  :root {
+    --bg: #fafaf8;
+    --ink: #0a0a0a;
+    --ink-soft: #4a4a4a;
+    --muted: #888;
+    --card: #ffffff;
+    --orange: #ff5a1f;
+    --orange-2: #ff8246;
+    --orange-soft: #fff1ea;
+    --green: #16a34a;
+    --green-soft: #ecfdf3;
+    --shadow-md: 0 4px 8px rgba(0,0,0,0.04), 0 20px 40px rgba(0,0,0,0.08);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  .dot-bg {
+    position: fixed;
+    inset: 0;
+    background-image: radial-gradient(rgba(0,0,0,0.06) 1px, transparent 1px);
+    background-size: 24px 24px;
+    mask-image: radial-gradient(ellipse at center top, black 30%, transparent 70%);
+    -webkit-mask-image: radial-gradient(ellipse at center top, black 30%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  nav.top {
+    padding: 16px 32px;
+    display: flex;
+    justify-content: center;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    background: rgba(250, 250, 248, 0.7);
+    backdrop-filter: saturate(180%) blur(16px);
+    -webkit-backdrop-filter: saturate(180%) blur(16px);
+    position: relative;
+    z-index: 2;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: -0.01em;
+  }
+  .logo-dot {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--orange) 0%, var(--orange-2) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: 14px;
+    box-shadow: 0 4px 12px rgba(255, 90, 31, 0.35);
+  }
+  main {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 24px;
+    position: relative;
+    z-index: 1;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid rgba(0,0,0,0.06);
+    border-radius: 24px;
+    box-shadow: var(--shadow-md);
+    max-width: 560px;
+    width: 100%;
+    padding: 56px 48px;
+    text-align: center;
+    animation: rise 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .check {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: var(--green-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 28px;
+    animation: pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.25s both;
+  }
+  @keyframes pop {
+    from { opacity: 0; transform: scale(0.5); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  .check svg { width: 36px; height: 36px; }
+  .check path {
+    stroke: var(--green);
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    fill: none;
+    stroke-dasharray: 30;
+    stroke-dashoffset: 30;
+    animation: draw 0.45s ease-out 0.55s forwards;
+  }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+  h1 {
+    font-family: 'Instrument Serif', serif;
+    font-weight: 400;
+    font-size: clamp(30px, 5vw, 40px);
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin-bottom: 16px;
+  }
+  h1 em {
+    font-style: italic;
+    color: var(--orange);
+  }
+  .sub {
+    color: var(--ink-soft);
+    font-size: 16px;
+    max-width: 420px;
+    margin: 0 auto 32px;
+  }
+  .steps {
+    text-align: left;
+    background: var(--bg);
+    border: 1px solid rgba(0,0,0,0.06);
+    border-radius: 16px;
+    padding: 20px 24px;
+    margin-bottom: 28px;
+  }
+  .step {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 8px 0;
+    font-size: 14.5px;
+    color: var(--ink-soft);
+  }
+  .step .n {
+    flex: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--orange-soft);
+    color: var(--orange);
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
+  }
+  .note {
+    font-size: 13px;
+    color: var(--muted);
+  }
+  footer {
+    text-align: center;
+    padding: 20px;
+    font-size: 12.5px;
+    color: var(--muted);
+    position: relative;
+    z-index: 1;
+  }
+  @media (max-width: 520px) {
+    .card { padding: 40px 24px; }
+  }
+</style>
+</head>
+<body>
+<div class="dot-bg"></div>
+<nav class="top">
+  <div class="logo"><span class="logo-dot">P</span> Personal Assistant · Phuket</div>
+</nav>
+<main>
+  <div class="card">
+    <div class="check">
+      <svg viewBox="0 0 36 36"><path d="M9 19 l6 6 l12 -13"/></svg>
+    </div>
+    <h1>Application received. <em>Thank you!</em></h1>
+    <p class="sub">We read every application personally and will get back to you within a week if we'd like to move forward.</p>
+    <div class="steps">
+      <div class="step"><span class="n">1</span><span>We review your answers personally</span></div>
+      <div class="step"><span class="n">2</span><span>If it's a match, we contact you for a quick chat</span></div>
+      <div class="step"><span class="n">3</span><span>You meet us in Phuket and we get started</span></div>
+    </div>
+    <p class="note">No need to do anything else. You can close this page.</p>
+  </div>
+</main>
+<footer>Personal Assistant · Phuket</footer>
+</body>
+</html>
